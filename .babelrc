@@ -19,7 +19,7 @@
     "umd": {
       "plugins": ["transform-es2015-modules-umd"],
       "presets": ["env", "react", "stage-1"],
-      "moduleId": "AsyncLoader"
+      "moduleId": "AsyncFetcher"
     }
   }
 }

@@ -8,7 +8,7 @@ import { isEvent, serialize, concatParams, parseMime } from "./utils";
 
 const defaultFetchCreator = requestData => axios(requestData);
 
-export default class AsyncLoader extends PureComponent {
+export default class AsyncFetcher extends PureComponent {
   static propTypes = {
     autoFetch: PropTypes.bool,
     method: PropTypes.oneOf(["get", "post", "put", "delete", "options"]),
