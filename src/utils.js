@@ -1,3 +1,5 @@
+import _isPlainObject from "lodash.isplainobject";
+
 export function isEvent(o) {
   return typeof o === "object" && !!o.type && "target" in o;
 }
