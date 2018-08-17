@@ -1,0 +1,25 @@
+{
+  "plugins": [
+    "transform-runtime"
+  ],
+  "env": {
+    "development": {
+      "presets": [["env", { "modules": false, "loose": true }], "react", "stage-1"]
+    },
+    "production": {
+      "presets": ["env", "react", "stage-1"]
+    },
+    "es": {
+      "presets": [["env", { "modules": false, "loose": true }], "react", "stage-1"]
+    },
+    "commonjs": {
+      "plugins": ["transform-es2015-modules-commonjs"],
+      "presets": [["env", { "modules": false, "loose": true }], "react", "stage-1"]
+    },
+    "umd": {
+      "plugins": ["transform-es2015-modules-umd"],
+      "presets": ["env", "react", "stage-1"],
+      "moduleId": "AsyncLoader"
+    }
+  }
+}
