@@ -95,7 +95,7 @@ export default class AsyncFetcher extends PureComponent {
       this._debouncedFetch(...args);
     }
   }
-  fetch(data = null, customRequest = {}) {
+  fetch = (data = null, customRequest = {}) => {
     const {
       url,
       headers,
@@ -241,7 +241,7 @@ export default class AsyncFetcher extends PureComponent {
           );
         })
     );
-  }
+  };
   setCustomState = state => {
     if (!!state && (typeof state === "object" || typeof state === "function")) {
       let hasCustom = false;
@@ -278,7 +278,7 @@ export default class AsyncFetcher extends PureComponent {
     if (!!this.props.children && typeof this.props.children === "function") {
       return (
         this.props.children({
-          fetch: this._debouncedFetch,
+          fetch: this.fetch,
           isLoading: this.state.isLoading,
           response: this.state.response,
           data: this.state.data,
