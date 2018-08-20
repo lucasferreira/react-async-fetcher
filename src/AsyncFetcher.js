@@ -12,7 +12,7 @@ export default class AsyncFetcher extends PureComponent {
   static propTypes = {
     autoFetch: PropTypes.bool,
     method: PropTypes.oneOf(["get", "post", "put", "delete", "options"]),
-    url: PropTypes.string.isRequired,
+    url: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).isRequired,
     params: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     postData: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     headers: PropTypes.object,
@@ -156,7 +156,6 @@ export default class AsyncFetcher extends PureComponent {
     }
 
     const requestConfig = {
-      url,
       method,
       withCredentials: !!withCredentials,
       headers: { ...headers, ...customHeaders },
@@ -171,19 +170,28 @@ export default class AsyncFetcher extends PureComponent {
 
     let params =
       !isPost && !!dataEvent && !isDataEvent ? dataEvent : concatParams(this.props.params, this.state.params);
-    if (!!params) {
-      if (typeof params !== "string" && _isPlainObject(params)) {
-        params = serialize(params);
-      }
-      if (typeof params === "string") {
-        requestConfig.url = (requestConfig.url + (requestConfig.url.indexOf("?") === -1 ? "?" : "&") + params).replace(
-          /\?&/gi,
-          "?"
-        );
-      } else {
-        requestConfig.params = params;
+
+    if (typeof url === "function") {
+      requestConfig.url = url(!!params ? params : {});
+    } else {
+      requestConfig.url = url;
+
+      if (!!params) {
+        if (typeof params !== "string" && _isPlainObject(params)) {
+          params = serialize(params);
+        }
+        if (typeof params === "string") {
+          requestConfig.url = (
+            requestConfig.url +
+            (requestConfig.url.indexOf("?") === -1 ? "?" : "&") +
+            params
+          ).replace(/\?&/gi, "?");
+        } else {
+          requestConfig.params = params;
+        }
       }
     }
+
     if (!!responseType) {
       requestConfig.responseType = responseType;
     }

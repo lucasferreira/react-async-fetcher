@@ -58,7 +58,7 @@ const MyIpWidget = () => (
 );
 ```
 
-Manual "non-automagic" (with autoFetch={false}) sample with query ([see this demo online](https://codesandbox.io/s/98joov34qy):
+Manual "non-automagic" (with autoFetch={false}) sample with query ([see this demo online](https://codesandbox.io/s/98joov34qy)):
 
 ```javascript
 import AsyncFetcher from "react-async-fetcher";
