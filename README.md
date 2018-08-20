@@ -22,9 +22,9 @@ yarn add react-async-fetcher
 
 ## Basic Usage
 
-The _AsyncFetcher component_ is based in function as child render.
+The _AsyncFetcher component_ is based in function as child render to enhance your render with useful callback functions and props.
 
-"Automagic" simple GET sample:
+"Automagic" simple GET sample ([see this demo online](https://codesandbox.io/s/8k2k96z25l)):
 
 ```javascript
 import AsyncFetcher from "react-async-fetcher";
@@ -58,16 +58,14 @@ const MyIpWidget = () => (
 );
 ```
 
-[See the demo above online](https://codesandbox.io/s/8k2k96z25l).
-
-Manual "non-automagic" (with autoFetch={false}) sample with query:
+Manual "non-automagic" (with autoFetch={false}) sample with query ([see this demo online](https://codesandbox.io/s/98joov34qy):
 
 ```javascript
 import AsyncFetcher from "react-async-fetcher";
 
 const MyUser = () => (
   <AsyncFetcher autoFetch={false} method="get" url="https://jsonplaceholder.typicode.com/users" params={{ id: "1" }}>
-    {({ isLoading, error, data, fetch }) => {
+    {({ fetch, isLoading, error, data }) => {
       // some loading state...
       if (isLoading) {
         return <p>Loading data...</p>;
@@ -91,7 +89,7 @@ const MyUser = () => (
         );
       }
 
-      // using the `fetch` argument/callback to call for JSON API
+      // using the `fetch` prop/callback to call for JSON API
       return (
         <button onClick={fetch} type="button">
           Find my user
@@ -102,4 +100,10 @@ const MyUser = () => (
 );
 ```
 
-[See the demo above online](https://codesandbox.io/s/98joov34qy).
+## Documentation
+
+More details and usages will coming soon.
+
+## License
+
+[MIT](./LICENSE)

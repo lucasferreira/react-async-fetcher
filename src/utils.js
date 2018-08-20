@@ -1,7 +1,10 @@
 import _isPlainObject from "lodash.isplainobject";
 
-export function isEvent(o) {
-  return typeof o === "object" && !!o.type && "target" in o;
+export function isEvent(e) {
+  return (
+    typeof e === "object" &&
+    (("nativeEvent" in e && e.nativeEvent instanceof Event) || ("type" in e && !!e.type && "target" in e))
+  );
 }
 
 export function serialize(obj, prefix = false) {

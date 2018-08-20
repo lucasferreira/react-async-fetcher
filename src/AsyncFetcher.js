@@ -95,7 +95,7 @@ export default class AsyncFetcher extends PureComponent {
       this._debouncedFetch(...args);
     }
   }
-  fetch = (data = null, customRequest = {}) => {
+  fetch = (dataEvent = null, customRequest = {}) => {
     const {
       url,
       headers,
@@ -113,6 +113,8 @@ export default class AsyncFetcher extends PureComponent {
 
     const method = this.props.method.toLowerCase();
     const isPost = method === "post" || method === "put";
+    const isDataEvent = !!dataEvent && isEvent(dataEvent);
+
     const contentType = !!this.props.contentType
       ? parseMime(this.props.contentType)
       : isPost
@@ -160,18 +162,15 @@ export default class AsyncFetcher extends PureComponent {
       headers: { ...headers, ...customHeaders },
     };
     if (isPost) {
-      if (!data || isEvent(data)) {
-        data = concatParams(this.props.postData, this.state.postData);
-      }
-
+      let data = !!dataEvent && !isDataEvent ? dataEvent : concatParams(this.props.postData, this.state.postData);
       if (!!data && contentType.indexOf("x-www-form-urlencoded") !== -1 && _isPlainObject(data)) {
         data = serialize(data);
       }
-
       requestConfig.data = data;
     }
 
-    let params = !isPost && !!data ? data : concatParams(this.props.params, this.state.params);
+    let params =
+      !isPost && !!dataEvent && !isDataEvent ? dataEvent : concatParams(this.props.params, this.state.params);
     if (!!params) {
       if (typeof params !== "string" && _isPlainObject(params)) {
         params = serialize(params);
@@ -187,9 +186,6 @@ export default class AsyncFetcher extends PureComponent {
     }
     if (!!responseType) {
       requestConfig.responseType = responseType;
-    }
-    if (!!data) {
-      requestConfig.data = data;
     }
 
     this.setState({ isLoading: true, error: null }, () =>
@@ -283,8 +279,8 @@ export default class AsyncFetcher extends PureComponent {
           response: this.state.response,
           data: this.state.data,
           error: this.state.error,
-          params: this.state.params,
-          postData: this.state.postData,
+          params: concatParams(this.props.params, this.state.params),
+          postData: concatParams(this.props.postData, this.state.postData),
           state: this.state.customState,
           set: this.setCustomState,
         }) || null
