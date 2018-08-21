@@ -19,7 +19,7 @@ export default class AsyncFetcher extends PureComponent {
     axiosConfig: PropTypes.object,
     ajax: PropTypes.bool,
     authToken: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-    accepts: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
+    accepts: PropTypes.oneOfType([PropTypes.string, PropTypes.array, PropTypes.func]),
     contentType: PropTypes.string,
     responseType: PropTypes.string,
     withCredentials: PropTypes.bool,
