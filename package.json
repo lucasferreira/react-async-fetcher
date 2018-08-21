@@ -1,6 +1,6 @@
 {
   "name": "react-async-fetcher",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "React component for asynchronous loading/fetch online data",
   "author": "Lucas Ferreira <contato@lucasferreira.com> (https://github.com/lucasferreira)",
   "homepage": "https://github.com/lucasferreira/react-async-fetcher",
@@ -54,8 +54,8 @@
   "dependencies": {
     "axios": "^0.18.0",
     "babel-runtime": "^6.26.0",
+    "fast-deep-equal": "^2.0.1",
     "lodash.debounce": "^4.0.8",
-    "lodash.isequal": "^4.5.0",
     "lodash.isplainobject": "^4.0.6"
   },
   "devDependencies": {

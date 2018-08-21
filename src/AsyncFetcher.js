@@ -2,8 +2,8 @@ import { PureComponent } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
 import _debounce from "lodash.debounce";
-import _isEqual from "lodash.isequal";
 import _isPlainObject from "lodash.isplainobject";
+import _isEqual from "fast-deep-equal";
 import { isEvent, serialize, concatParams, parseMime } from "./utils";
 
 const defaultFetchCreator = requestData => axios(requestData);
@@ -44,6 +44,9 @@ export default class AsyncFetcher extends PureComponent {
   constructor(props) {
     super(props);
 
+    this._debouncedFetch =
+      +props.debounce > 0 ? _debounce(this.fetch.bind(this), +props.debounce) : this.fetch.bind(this);
+
     this.state = {
       isLoading: !!props.autoFetch,
       response: null,
@@ -74,14 +77,12 @@ export default class AsyncFetcher extends PureComponent {
         +this.props.debounce > 0 ? _debounce(this.fetch.bind(this), +this.props.debounce) : this.fetch.bind(this);
     }
 
-    if (hasChange) {
-      this.refetch();
+    if (hasChange && !!this.props.autoFetch) {
+      this._debouncedFetch();
     }
   }
   componentDidMount() {
     this._mounted = true;
-    this._debouncedFetch =
-      +this.props.debounce > 0 ? _debounce(this.fetch.bind(this), +this.props.debounce) : this.fetch.bind(this);
 
     if (!!this.props.autoFetch) {
       this.fetch();
@@ -89,11 +90,6 @@ export default class AsyncFetcher extends PureComponent {
   }
   componentWillUnmount() {
     this._mounted = false;
-  }
-  refetch(...args) {
-    if (!!this.props.autoFetch) {
-      this._debouncedFetch(...args);
-    }
   }
   fetch = (dataEvent = null, customRequest = {}) => {
     const {
@@ -113,7 +109,7 @@ export default class AsyncFetcher extends PureComponent {
 
     const method = this.props.method.toLowerCase();
     const isPost = method === "post" || method === "put";
-    const isDataEvent = !!dataEvent && isEvent(dataEvent);
+    const isEventData = !!dataEvent && isEvent(dataEvent);
 
     const contentType = !!this.props.contentType
       ? parseMime(this.props.contentType)
@@ -160,16 +156,9 @@ export default class AsyncFetcher extends PureComponent {
       withCredentials: !!withCredentials,
       headers: { ...headers, ...customHeaders },
     };
-    if (isPost) {
-      let data = !!dataEvent && !isDataEvent ? dataEvent : concatParams(this.props.postData, this.state.postData);
-      if (!!data && contentType.indexOf("x-www-form-urlencoded") !== -1 && _isPlainObject(data)) {
-        data = serialize(data);
-      }
-      requestConfig.data = data;
-    }
 
     let params =
-      !isPost && !!dataEvent && !isDataEvent ? dataEvent : concatParams(this.props.params, this.state.params);
+      !isPost && !!dataEvent && !isEventData ? dataEvent : concatParams(this.props.params, this.state.params);
 
     if (typeof url === "function") {
       requestConfig.url = url(!!params ? params : {});
@@ -190,6 +179,14 @@ export default class AsyncFetcher extends PureComponent {
           requestConfig.params = params;
         }
       }
+    }
+
+    if (isPost) {
+      let data = !!dataEvent && !isEventData ? dataEvent : concatParams(this.props.postData, this.state.postData);
+      if (!!data && contentType.indexOf("x-www-form-urlencoded") !== -1 && _isPlainObject(data)) {
+        data = serialize(data);
+      }
+      requestConfig.data = data;
     }
 
     if (!!responseType) {
@@ -263,7 +260,7 @@ export default class AsyncFetcher extends PureComponent {
       }
 
       Object.keys(state).forEach(k => {
-        if (["params", "postData"].indexOf(k) !== -1) {
+        if (["params", "postData", "data"].indexOf(k) !== -1) {
           if (!_isEqual(this.state[k], state[k])) {
             this.setState({ [k]: state[k] });
           }
