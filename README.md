@@ -11,13 +11,13 @@ AsyncFetcher it is a simple and usefull React _(web or native)_ component for as
 Since the library is a JS-based solution, to install the latest version of `react-async-fetcher` you only need to run:
 
 ```bash
-npm install --save react-async-fetcher
+$ npm install --save react-async-fetcher
 ```
 
 or
 
 ```bash
-yarn add react-async-fetcher
+$ yarn add react-async-fetcher
 ```
 
 ## Basic Usage
@@ -26,7 +26,7 @@ The _AsyncFetcher component_ is based in function as child render to enhance you
 
 "Automagic" simple GET sample ([see this demo online](https://codesandbox.io/s/8k2k96z25l)):
 
-```javascript
+```jsx
 import AsyncFetcher from "react-async-fetcher";
 
 const MyIpWidget = () => (
@@ -60,7 +60,7 @@ const MyIpWidget = () => (
 
 Manual "non-automagic" (with autoFetch={false}) sample with query ([see this demo online](https://codesandbox.io/s/98joov34qy)):
 
-```javascript
+```jsx
 import AsyncFetcher from "react-async-fetcher";
 
 const MyUser = () => (
@@ -112,7 +112,7 @@ const MyUser = () => (
 | debounce        | `0`     | No        | Indicates how much milliseconds _(positive number)_ the AsyncFetcher component will debounce consecutive requests after `params` or `postData` changes when `autoFetch={true}`. Indicate for autocompletes and/or `autoFetch` based forms                                                                                                                       |
 | headers         | `null`  | Yes       | A custom plain object with additional HTTP Headers for your request                                                                                                                                                                                                                                                                                             |
 | ajax            | `false` | No        | Adds `{'X-Requested-With': 'XMLHttpRequest'}` to your request headers                                                                                                                                                                                                                                                                                           |
-| authToken       | `null`  | No        | Adds a authorization token _(like JWT)_ to your request headers as `{'Authorization':`Bearer ${authToken}`}`                                                                                                                                                                                                                                                    |
+| authToken       | `null`  | No        | Adds a authorization token _(like JWT)_ to your request headers as `{'Authorization': 'Bearer ${authToken}'}`                                                                                                                                                                                                                                                   |
 | accepts         | `null`  | No        | Adds a `Accept` header to your request. Can be some mime string, array of mimes or function that evals and return a mime string                                                                                                                                                                                                                                 |
 | contentType     | `null`  | No        | Adds a `Content-Type` header to your request. It's useful when you need to POST some _json data_. So you can use `contentType="json"`. It's expected common content types options as: json, xml, form, html and text. Or you could pass some complex mime like `multipart/form-data`                                                                            |
 | responseType    | `null`  | Yes       | Indicates the type of data that the server will respond with. As [axios documentation](https://github.com/axios/axios#request-config) the options are: _'json', 'text', 'arraybuffer', 'blob', 'document', 'stream'_                                                                                                                                            |
