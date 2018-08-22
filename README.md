@@ -1,14 +1,12 @@
 <h1 align="center">react-async-fetcher</h1>
 
-<p align="center" style="font-size: 1.2rem;">AsyncFetcher it is a simple and usefull React _(web or native)_ component for asynchronous loading/fetch online data with help of [axios](https://github.com/axios/axios).</p>
+<p align="center" style="font-size: 1.2rem;"><strong>AsyncFetcher</strong> it is a simple and usefull React <i>(web or native)</i> component for asynchronous loading/fetch online data with help of <a href="https://github.com/axios/axios" title="More about axios">axios</a>.</p>
 
 <hr />
 
-<p align="center" style="font-size: 1.2rem;">
 [![npm version](http://img.shields.io/npm/v/react-async-fetcher.svg?style=flat-square)](https://npmjs.org/package/react-async-fetcher "View this project on npm")
 [![npm downloads](http://img.shields.io/npm/dm/react-async-fetcher.svg?style=flat-square)](https://npmjs.org/package/react-async-fetcher "View this project on npm")
 [![npm licence](http://img.shields.io/npm/l/react-async-fetcher.svg?style=flat-square)](https://npmjs.org/package/react-async-fetcher "View this project on npm")
-</p>
 
 ## Installation
 
