@@ -1,4 +1,6 @@
-<h1 align="center">react-async-fetcher</h1>
+<h1 align="center">
+  <img src="https://user-images.githubusercontent.com/234495/44482953-21bd0480-a620-11e8-91cf-c65718f9c63f.png" alt="react-async-fetcher" />
+</h1>
 
 <p align="center" style="font-size: 1.2rem;">
   <strong>AsyncFetcher</strong> it is a simple and usefull React <i>(web or native)</i> component for asynchronous loading/fetch online data with help of <a href="https://github.com/axios/axios" title="More about axios">axios</a>.<br />
