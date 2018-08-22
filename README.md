@@ -63,7 +63,7 @@ const MyIpWidget = () => (
 );
 ```
 
-### Manual "non-automagic" _(with autoFetch={false})_ sample with query
+### Manual "non-automagic" _(with autoFetch={false})_ with query
 
 > [See this demo online](https://codesandbox.io/s/98joov34qy)
 
@@ -154,19 +154,19 @@ You can even manually reset your `data` results calling `set({ data: null })`, o
 
 ### params
 
-> `object` || defaults to `null`
+> `object` | defaults to `null`
 
 Prop to access the current query params state that will be used in the next request/fetch cycle.
 
 ### postData
 
-> `object` || defaults to `null`
+> `object` | defaults to `null`
 
 Prop to access the current request payload state that will be used in the next _POST_ request/fetch cycle.
 
 ### state
 
-> `object` || defaults to `null`
+> `object` | defaults to `null`
 
 Prop to access the current custom state of your AsyncFetcher component that are not `params`, `postData` and `data`.
 
