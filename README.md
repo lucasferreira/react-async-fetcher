@@ -114,6 +114,96 @@ const MyUser = () => (
 );
 ```
 
+### Autocomplete search with `debounce` prop to delay future requests
+
+> [See this demo online](https://codesandbox.io/s/jpvr4p1763)
+
+```jsx
+import React from "react";
+import AsyncFetcher from "react-async-fetcher";
+
+const MyAutoComplete = () => (
+  <AsyncFetcher url="https://api.github.com/search/users" params={{ q: "" }} debounce={300}>
+    {({ isLoading, error, data, params, set }) => (
+      <div className="fake-form">
+        <input
+          label="Search for github username"
+          value={params.q}
+          onChange={event => set({ params: { q: event.target.value } })}
+        />
+        {data !== null &&
+          !!data.items && (
+            <ul>
+              {data.items.map(user => (
+                <li>{user.login}</li>
+              ))}
+            </ul>
+          )}
+      </div>
+    )}
+  </AsyncFetcher>
+);
+```
+
+### Manual POST request
+
+> [See this demo online](https://codesandbox.io/s/pwmz63z8kx)
+
+```jsx
+import React from "react";
+import AsyncFetcher from "react-async-fetcher";
+
+const MyForm = () => (
+  // passing `postData` as prop or component state you will generate some payload data to your POST request
+  <AsyncFetcher
+    autoFetch={false}
+    method="post"
+    contentType="json"
+    url="https://jsonplaceholder.typicode.com/posts"
+    params={{ userId: "1", title: "", body: "" }}>
+    {({ isLoading, error, data, postData, set, fetch }) => {
+      // some loading state...
+      if (isLoading) {
+        return <p>Loading data...</p>;
+      }
+
+      // if has any error in your request
+      if (error) {
+        return (
+          <p>
+            <strong>Error:</strong> {JSON.stringify(error)}
+          </p>
+        );
+      }
+
+      if (data) {
+        // if reach here your post request was successful
+        return (
+          <p>
+            <strong>Success:</strong> {JSON.stringify(data)}
+          </p>
+        );
+      }
+
+      // using the `fetch` prop/callback to send POST for JSON API
+      return (
+        <div className="fake-form">
+          <input
+            type="text"
+            placeholder="Post Title"
+            value={postData.title}
+            onChange={event => set({ postData: { title: event.target.value } })}
+          />
+          <button onClick={fetch} type="button">
+            Send my POST
+          </button>
+        </div>
+      );
+    }}
+  </AsyncFetcher>
+);
+```
+
 ## Children Render Props
 
 This is the list of main props that all render functions receive in a first and only object props that you should probably know about.
