@@ -1,10 +1,14 @@
-# react-async-fetcher
+<h1 align="center">react-async-fetcher</h1>
 
-AsyncFetcher it is a simple and usefull React _(web or native)_ component for asynchronous loading/fetch online data with help of [axios](https://github.com/axios/axios).
+<p align="center" style="font-size: 1.2rem;">AsyncFetcher it is a simple and usefull React _(web or native)_ component for asynchronous loading/fetch online data with help of [axios](https://github.com/axios/axios).</p>
 
+<hr />
+
+<p align="center" style="font-size: 1.2rem;">
 [![npm version](http://img.shields.io/npm/v/react-async-fetcher.svg?style=flat-square)](https://npmjs.org/package/react-async-fetcher "View this project on npm")
 [![npm downloads](http://img.shields.io/npm/dm/react-async-fetcher.svg?style=flat-square)](https://npmjs.org/package/react-async-fetcher "View this project on npm")
 [![npm licence](http://img.shields.io/npm/l/react-async-fetcher.svg?style=flat-square)](https://npmjs.org/package/react-async-fetcher "View this project on npm")
+</p>
 
 ## Installation
 
@@ -20,13 +24,16 @@ or
 $ yarn add react-async-fetcher
 ```
 
-## Basic Usage
+## Usage
 
 The _AsyncFetcher component_ is based in function as child render to enhance your render with useful callback functions and props.
 
-"Automagic" simple GET sample ([see this demo online](https://codesandbox.io/s/8k2k96z25l)):
+### "Automagic" simple GET
+
+> [See this demo online](https://codesandbox.io/s/8k2k96z25l)
 
 ```jsx
+import React from "react";
 import AsyncFetcher from "react-async-fetcher";
 
 const MyIpWidget = () => (
@@ -58,12 +65,16 @@ const MyIpWidget = () => (
 );
 ```
 
-Manual "non-automagic" (with autoFetch={false}) sample with query ([see this demo online](https://codesandbox.io/s/98joov34qy)):
+### Manual "non-automagic" _(with autoFetch={false})_ sample with query
+
+> [See this demo online](https://codesandbox.io/s/98joov34qy)
 
 ```jsx
+import React from "react";
 import AsyncFetcher from "react-async-fetcher";
 
 const MyUser = () => (
+  // passing `params` as prop or component state you will generate some "/users?id=1" request
   <AsyncFetcher autoFetch={false} method="get" url="https://jsonplaceholder.typicode.com/users" params={{ id: "1" }}>
     {({ fetch, isLoading, error, data }) => {
       // some loading state...
@@ -100,7 +111,68 @@ const MyUser = () => (
 );
 ```
 
-## Props
+## Children Render Props
+
+This is the list of main props that all render functions receive in a first and only object props that you should probably know about.
+
+### fetch
+
+> `function(data:object, customRequest:object)` | defaults to `null`, `null`
+
+When you call this function you manually ask for a new request/fetch for your AsyncFetcher component. You could pass some fresh data as first argument, and this data if passed will overwrite the `params` prop/state in GET requests or will overwrite the `postData` prop/state in POST requests.
+The second argument _(customRequest)_ receives optionaly some plain object with additionals configs for your axios request.
+
+### isLoading
+
+> `boolean` | defaults to `true` when `autoFetch={true}` or `false` when `autoFetch={false}`
+
+This prop will indicate whether or not your AsyncFetcher component is in loading/fetching state.
+
+### data
+
+> `any` | defaults to `null`
+
+This is the main result of your request when it done with success. As your response data it is parsed by axios, it could be some JSON/Javascript object or other kind of complex data.
+
+### error
+
+> `any` | defaults to `null`
+
+This prop will be filled when your request/fetch it is completed without success. When you start a new `fetch` this prop will be `null` again until new fail happens.
+
+### response
+
+> `object` | defaults to `null`
+
+This prop will be filled when your request/fetch it is completed and will have your complete request details beyond `data` and `error` info.
+
+### set
+
+> `object` or `func` | use like React `setState` function with some plain object (key -> value) or a function that eval some plain object
+
+Since AsyncFetcher component controls his internal state for new changes you could create stateless components that uses AsyncFetcher and manage new `params` and/or `postData` internally without use component props.
+You could call inside you render children function like `set({ params: { userId: 1, active: 'Y' } })` to fill some new fresh params for your query request or could call `set({ postData: { name: 'John', email: 'john@doe.com' } })` for your POST requests.
+You can even manually reset your `data` results calling `set({ data: null })`, or using the _set_ function to handle any other custom state variable than `params`, `postData` or `data`, like `set({ myCustom: 'var' })`. This custom state props will be avaible in `state` prop.
+
+### params
+
+> `object` || defaults to `null`
+
+Prop to access the current query params state that will be used in the next request/fetch cycle.
+
+### postData
+
+> `object` || defaults to `null`
+
+Prop to access the current request payload state that will be used in the next _POST_ request/fetch cycle.
+
+### state
+
+> `object` || defaults to `null`
+
+Prop to access the current custom state of your AsyncFetcher component that are not `params`, `postData` and `data`.
+
+## Component Props
 
 | Property        | Default | axios API | Description                                                                                                                                                                                                                                                                                                                                                     |
 | --------------- | ------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
