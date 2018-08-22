@@ -1,7 +1,9 @@
 <h1 align="center">react-async-fetcher</h1>
 
-<p align="center" style="font-size: 1.2rem;"><strong>AsyncFetcher</strong> it is a simple and usefull React <i>(web or native)</i> component for asynchronous loading/fetch online data with help of <a href="https://github.com/axios/axios" title="More about axios">axios</a>.</p>
-<p align="center"><img src="https://user-images.githubusercontent.com/234495/44481466-339ca880-a61c-11e8-8457-85c894027d84.png" alt="AsyncFetcher" width="70%" style="border: 0; width: 70%; min-width: 240px;" /></p>
+<p align="center" style="font-size: 1.2rem;">
+  <strong>AsyncFetcher</strong> it is a simple and usefull React <i>(web or native)</i> component for asynchronous loading/fetch online data with help of <a href="https://github.com/axios/axios" title="More about axios">axios</a>.<br />
+  <img src="https://user-images.githubusercontent.com/234495/44481891-672c0280-a61d-11e8-8898-d987b7808b90.png" alt="AsyncFetcher" width="70%" style="border: 0; width: 70%; min-width: 240px;" />
+</p>
 
 <hr />
 
