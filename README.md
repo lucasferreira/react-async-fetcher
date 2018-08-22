@@ -1,6 +1,7 @@
 <h1 align="center">react-async-fetcher</h1>
 
 <p align="center" style="font-size: 1.2rem;"><strong>AsyncFetcher</strong> it is a simple and usefull React <i>(web or native)</i> component for asynchronous loading/fetch online data with help of <a href="https://github.com/axios/axios" title="More about axios">axios</a>.</p>
+<p align="center"><img src="https://user-images.githubusercontent.com/234495/44481466-339ca880-a61c-11e8-8457-85c894027d84.png" alt="AsyncFetcher" width="70%" style="border: 0; width: 70%; min-width: 240px;" /></p>
 
 <hr />
 
@@ -51,7 +52,7 @@ const MyIpWidget = () => (
         );
       }
 
-      // if reach here your fetch are good
+      // if reach here your request was successful
       return (
         <p>
           <strong>My IP:</strong> {data.ip} <br />
@@ -63,7 +64,7 @@ const MyIpWidget = () => (
 );
 ```
 
-### Manual "non-automagic" _(with autoFetch={false})_ with query
+### Manual "non-automagic" _(autoFetch={false})_ with query
 
 > [See this demo online](https://codesandbox.io/s/98joov34qy)
 
@@ -89,8 +90,8 @@ const MyUser = () => (
         );
       }
 
-      // if reach here your fetch are good
       if (data) {
+        // if reach here your request was successful
         return (
           <p>
             <strong>Name:</strong> {data.name}
@@ -146,10 +147,12 @@ This prop will be filled when your request/fetch it is completed and will have y
 
 ### set
 
-> `object` or `func` | use like React `setState` function with some plain object (key -> value) or a function that eval some plain object
+> `function(data:<object or func>)` | use like React `setState` function with some plain object (key -> value) or a function that eval some plain object
 
 Since AsyncFetcher component controls his internal state for new changes you could create stateless components that uses AsyncFetcher and manage new `params` and/or `postData` internally without use component props.
+
 You could call inside you render children function like `set({ params: { userId: 1, active: 'Y' } })` to fill some new fresh params for your query request or could call `set({ postData: { name: 'John', email: 'john@doe.com' } })` for your POST requests.
+
 You can even manually reset your `data` results calling `set({ data: null })`, or using the _set_ function to handle any other custom state variable than `params`, `postData` or `data`, like `set({ myCustom: 'var' })`. This custom state props will be avaible in `state` prop.
 
 ### params
