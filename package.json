@@ -1,6 +1,6 @@
 {
   "name": "react-async-fetcher",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "React component for asynchronous loading/fetch online data",
   "author": "Lucas Ferreira <contato@lucasferreira.com> (https://github.com/lucasferreira)",
   "homepage": "https://github.com/lucasferreira/react-async-fetcher",
