@@ -7,10 +7,13 @@ import _isEqual from "fast-deep-equal";
 import { isEvent, serialize, concatParams, parseMime } from "./utils";
 
 const defaultFetchCreator = requestData => axios(requestData);
+const boolEval = (be, ...args) => !!(typeof be === "function" ? be(...args) : be);
 
 export default class AsyncFetcher extends PureComponent {
   static propTypes = {
     autoFetch: PropTypes.bool,
+    autoPreventDefault: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
+    canFetch: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
     method: PropTypes.oneOf(["get", "post", "put", "delete", "options"]),
     url: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).isRequired,
     params: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
@@ -32,6 +35,8 @@ export default class AsyncFetcher extends PureComponent {
   };
   static defaultProps = {
     autoFetch: true,
+    canFetch: true,
+    autoPreventDefault: true,
     method: "get",
     headers: {},
     axiosConfig: {},
@@ -44,8 +49,8 @@ export default class AsyncFetcher extends PureComponent {
   constructor(props) {
     super(props);
 
-    this._debouncedFetch =
-      +props.debounce > 0 ? _debounce(this.fetch.bind(this), +props.debounce) : this.fetch.bind(this);
+    this._debouncedUpdate =
+      +props.debounce > 0 ? _debounce(this._update.bind(this), +props.debounce) : this._update.bind(this);
 
     this.state = {
       isLoading: !!props.autoFetch,
@@ -58,6 +63,19 @@ export default class AsyncFetcher extends PureComponent {
     };
   }
   componentDidUpdate(prevProps, prevState) {
+    this._debouncedUpdate(prevProps, prevState);
+  }
+  componentDidMount() {
+    this._mounted = true;
+
+    if (!!this.props.autoFetch) {
+      this.fetch();
+    }
+  }
+  componentWillUnmount() {
+    this._mounted = false;
+  }
+  _update(prevProps, prevState) {
     let hasChange = false;
     ["method", "params", "postData", "url", "authToken"].forEach(k => {
       if (k in prevProps && !_isEqual(prevProps[k], this.props[k])) {
@@ -73,29 +91,103 @@ export default class AsyncFetcher extends PureComponent {
     }
 
     if (+prevProps.debounce !== +this.props.debounce) {
-      this._debouncedFetch =
-        +this.props.debounce > 0 ? _debounce(this.fetch.bind(this), +this.props.debounce) : this.fetch.bind(this);
+      this._debouncedUpdate =
+        +this.props.debounce > 0 ? _debounce(this._update.bind(this), +this.props.debounce) : this._update.bind(this);
     }
 
     if (hasChange && !!this.props.autoFetch) {
-      this._debouncedFetch();
-    }
-  }
-  componentDidMount() {
-    this._mounted = true;
-
-    if (!!this.props.autoFetch) {
       this.fetch();
     }
   }
-  componentWillUnmount() {
-    this._mounted = false;
-  }
-  fetch = (dataEvent = null, customRequest = {}) => {
+  setCustomState = state => {
+    if (!!state && (typeof state === "object" || typeof state === "function")) {
+      let hasCustom = false;
+      let customState = this.state.customState;
+
+      if (typeof state === "function") {
+        state = state({
+          params: this.state.params,
+          postData: this.state.postData,
+          ...customState,
+        });
+        if (typeof state !== "object") {
+          return;
+        }
+      }
+
+      Object.keys(state).forEach(k => {
+        if (["params", "postData", "data"].indexOf(k) !== -1) {
+          if (!_isEqual(this.state[k], state[k])) {
+            this.setState({ [k]: state[k] });
+          }
+        } else {
+          customState[k] = state[k];
+          hasCustom = true;
+        }
+      });
+
+      if (hasCustom) {
+        this.setState({ customState });
+      }
+    }
+  };
+  getState = (baseState = {}) => {
+    let { params = null, postData = null, state = null } = baseState;
+
+    if (!params) {
+      params = concatParams(this.props.params, this.state.params);
+    }
+    if (!postData) {
+      postData = concatParams(this.props.postData, this.state.postData);
+    }
+    if (!state) {
+      state = this.state.customState;
+    }
+
+    return {
+      params,
+      postData,
+      state,
+    };
+  };
+  fetch = (dataEvent = {}) => {
+    let axiosConfig = this.props.axiosConfig || {};
+
+    const method = this.props.method.toLowerCase();
+    const isPost = method === "post" || method === "put";
+    const isEventData = !!dataEvent && isEvent(dataEvent);
+
+    const customState = {};
+    if (!isEventData && _isPlainObject(dataEvent)) {
+      axiosConfig = Object.assign(
+        axiosConfig,
+        (() => {
+          const { params, postData, ...axiosConfig } = dataEvent;
+          if (!!params) {
+            customState.params = dataEvent.params;
+          }
+          if (isPost && !!postData) {
+            customState.postData = dataEvent.postData;
+          }
+          return axiosConfig;
+        })()
+      );
+    }
+
+    const state = this.getState(customState);
+    let { params, postData } = state;
+
+    if (isEventData && boolEval(this.props.autoPreventDefault, state) && dataEvent.preventDefault) {
+      dataEvent.preventDefault();
+    }
+
+    if (!boolEval(this.props.canFetch, state)) {
+      return;
+    }
+
     const {
       url,
       headers,
-      axiosConfig,
       authToken,
       ajax,
       accepts,
@@ -105,11 +197,7 @@ export default class AsyncFetcher extends PureComponent {
       fetchCreator,
       onResponse,
       onError,
-    } = this.props;
-
-    const method = this.props.method.toLowerCase();
-    const isPost = method === "post" || method === "put";
-    const isEventData = !!dataEvent && isEvent(dataEvent);
+    } = { ...this.props, ...axiosConfig };
 
     const contentType = !!this.props.contentType
       ? parseMime(this.props.contentType)
@@ -157,11 +245,8 @@ export default class AsyncFetcher extends PureComponent {
       headers: { ...headers, ...customHeaders },
     };
 
-    let params =
-      !isPost && !!dataEvent && !isEventData ? dataEvent : concatParams(this.props.params, this.state.params);
-
     if (typeof url === "function") {
-      requestConfig.url = url(!!params ? params : {});
+      requestConfig.url = url(state);
     } else {
       requestConfig.url = url;
 
@@ -182,11 +267,10 @@ export default class AsyncFetcher extends PureComponent {
     }
 
     if (isPost) {
-      let data = !!dataEvent && !isEventData ? dataEvent : concatParams(this.props.postData, this.state.postData);
-      if (!!data && contentType.indexOf("x-www-form-urlencoded") !== -1 && _isPlainObject(data)) {
-        data = serialize(data);
+      if (!!postData && contentType.indexOf("x-www-form-urlencoded") !== -1 && _isPlainObject(postData)) {
+        postData = serialize(postData);
       }
-      requestConfig.data = data;
+      requestConfig.data = postData;
     }
 
     if (!!responseType) {
@@ -194,7 +278,7 @@ export default class AsyncFetcher extends PureComponent {
     }
 
     this.setState({ isLoading: true, error: null }, () =>
-      fetchCreator({ ...requestConfig, ...axiosConfig, ...customRequest })
+      fetchCreator({ ...requestConfig, ...axiosConfig })
         .then(response => {
           if (!this._mounted) {
             return;
@@ -207,7 +291,17 @@ export default class AsyncFetcher extends PureComponent {
               isLoading: false,
             },
             () => {
-              if (!!onResponse) onResponse(response);
+              if (!!onResponse)
+                onResponse({
+                  isLoading: false,
+                  response: this.state.response,
+                  data: this.state.data,
+                  set: this.setCustomState,
+                  params,
+                  postData: !!isPost ? postData : null,
+                  state: this.state.customState,
+                  error: null,
+                });
             }
           );
         })
@@ -237,43 +331,21 @@ export default class AsyncFetcher extends PureComponent {
               return errorState;
             },
             () => {
-              if (!!onError) onError(transformedError);
+              if (!!onError)
+                onError(transformedError, {
+                  isLoading: false,
+                  response: this.state.response,
+                  error: this.state.error,
+                  data: this.state.data,
+                  set: this.setCustomState,
+                  params,
+                  postData: !!isPost ? postData : null,
+                  state: this.state.customState,
+                });
             }
           );
         })
     );
-  };
-  setCustomState = state => {
-    if (!!state && (typeof state === "object" || typeof state === "function")) {
-      let hasCustom = false;
-      let customState = this.state.customState;
-
-      if (typeof state === "function") {
-        state = state({
-          params: this.state.params,
-          postData: this.state.postData,
-          ...customState,
-        });
-        if (typeof state !== "object") {
-          return;
-        }
-      }
-
-      Object.keys(state).forEach(k => {
-        if (["params", "postData", "data"].indexOf(k) !== -1) {
-          if (!_isEqual(this.state[k], state[k])) {
-            this.setState({ [k]: state[k] });
-          }
-        } else {
-          customState[k] = state[k];
-          hasCustom = true;
-        }
-      });
-
-      if (hasCustom) {
-        this.setState({ customState });
-      }
-    }
   };
   render() {
     if (!!this.props.children && typeof this.props.children === "function") {
@@ -284,10 +356,8 @@ export default class AsyncFetcher extends PureComponent {
           response: this.state.response,
           data: this.state.data,
           error: this.state.error,
-          params: concatParams(this.props.params, this.state.params),
-          postData: concatParams(this.props.postData, this.state.postData),
-          state: this.state.customState,
           set: this.setCustomState,
+          ...this.getState(),
         }) || null
       );
     }

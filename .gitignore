@@ -1,7 +1,11 @@
 *.log
+build
+coverage
 node_modules
 jspm_packages
 dist
+docs/dist
+src/.DS_Store
 .DS_Store
 .npm
 .eslintcache
