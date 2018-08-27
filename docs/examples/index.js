@@ -18,7 +18,7 @@ const Samples = [
     sourceCode: require("!!raw-loader!./CustomQuery"),
   },
   {
-    name: "Auto Complete",
+    name: "Autocomplete",
     link: "/docs/examples/AutoComplete.js",
     component: require("./AutoComplete").default,
     sourceCode: require("!!raw-loader!./AutoComplete"),
