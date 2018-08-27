@@ -127,7 +127,7 @@ export default class AsyncFetcher extends PureComponent {
       });
 
       if (hasCustom) {
-        this.setState({ customState });
+        this.setState({ customState }, () => this.forceUpdate());
       }
     }
   };
