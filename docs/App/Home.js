@@ -3,7 +3,7 @@ import React from "react";
 const Home = () => (
   <div className="home-page">
     <p>
-      <strong>AsyncFetcher</strong> it is a simple and usefull React <em>(web or native)</em> component for asynchronous
+      <strong>AsyncFetcher</strong> it is a simple and useful React <em>(web or native)</em> component for asynchronous
       loading/fetch online data with help of{" "}
       <a href="https://github.com/axios/axios" target="_blank" rel="noopener">
         axios
