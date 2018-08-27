@@ -83,6 +83,24 @@ header h1 {
 .home-page {
   text-align: center;
 }
+.markdown-body h2 {
+  font-size: 24px;
+  margin-top: 27px;
+  margin-bottom: 16px;
+}
+.markdown-body h3 {
+  font-size: 21px;
+  margin-top: 23px;
+  margin-bottom: 14px;
+}
+.markdown-body blockquote {
+  font-size: 14px;
+  padding: 9px 13px;
+  margin-bottom: 10px;
+}
+.markdown-body blockquote code {
+  font-style: italic;
+}
 .loading {
   position: relative;
   font-size: 14px;

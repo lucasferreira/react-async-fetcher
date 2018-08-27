@@ -44,6 +44,6 @@ module.exports = {
       inject: false,
       template: path.resolve(__dirname, "docs/index.html"),
     }),
-    new CopyWebpackPlugin(["logo.png"]),
+    new CopyWebpackPlugin(["logo.png", "favicon.ico"]),
   ],
 };

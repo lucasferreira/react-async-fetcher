@@ -1,7 +1,9 @@
 import React, { Fragment } from "react";
-import { BrowserRouter as Router, Link, Route } from "react-router-dom";
+import { HashRouter as Router, Link, Route } from "react-router-dom";
 import Highlight from "./Highlight";
 import Home from "./Home";
+import Installation from "./Installation";
+import Docs from "./Docs";
 import Samples from "../examples";
 
 import "../index.css";
@@ -11,7 +13,7 @@ const App = () => (
     <div id="page">
       <header>
         <h1>
-          <img src="/logo.png" alt="React Async Fetcher" />
+          <img src="logo.png" alt="React Async Fetcher" />
         </h1>
       </header>
       <div className="container-fluid">
@@ -22,11 +24,14 @@ const App = () => (
                 <Link to={`/`}>Home</Link>
               </li>
               <li>
-                <a
-                  href="https://github.com/lucasferreira/react-async-fetcher#children-render-props"
-                  target="_blank"
-                  rel="noopener">
-                  Documentation
+                <Link to={`/installation`}>Installation</Link>
+              </li>
+              <li>
+                <Link to={`/docs`}>Documentation</Link>
+              </li>
+              <li>
+                <a href="https://github.com/lucasferreira/react-async-fetcher" target="_blank" rel="noopener">
+                  GitHub
                 </a>
               </li>
               <li className="nav-header">Examples</li>
@@ -39,6 +44,8 @@ const App = () => (
           </div>
           <div className="main">
             <Route exact path="/" component={Home} />
+            <Route exact path="/installation" component={Installation} />
+            <Route exact path="/docs" component={Docs} />
             {Samples.map(sample => (
               <Route
                 key={`route-${sample.key}`}

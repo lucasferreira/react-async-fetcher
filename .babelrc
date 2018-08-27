@@ -7,7 +7,7 @@
       "presets": [["env", { "modules": false, "loose": true }], "react", "stage-1"]
     },
     "production": {
-      "presets": ["env", "react", "stage-1"]
+      "presets": [["env", { "modules": false, "loose": true }], "react", "stage-1"]
     },
     "es": {
       "presets": [["env", { "modules": false, "loose": true }], "react", "stage-1"]

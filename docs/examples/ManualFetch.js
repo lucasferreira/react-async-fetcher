@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import AsyncFetcher from "react-async-fetcher";
 
 const ManualFetch = () => (
+  // passing `params` as prop or component state you will generate some "/users?id=1" request
   <AsyncFetcher autoFetch={false} method="get" url="https://jsonplaceholder.typicode.com/users" params={{ id: "1" }}>
     {({ isLoading, error, data, fetch }) => {
       // some loading state...
